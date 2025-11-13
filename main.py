@@ -1,11 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
+import os
+from dotenv import load_dotenv
+
+# Carica le variabili d'ambiente dal file .env
+load_dotenv()
 
 # Set per tenere traccia degli URL già visitati ed evitare cicli infiniti
 # e crawling duplicati.
 VISITED_URLS = set()
-MAX_PAGES_TO_CRAWL = 10  # Limite per evitare un crawling eccessivo
+MAX_PAGES_TO_CRAWL = 10000  # Limite per evitare un crawling eccessivo
 
 def crawl_page(url, depth=0):
     """
@@ -72,8 +77,12 @@ def crawl_page(url, depth=0):
 
 # --- Configurazione e Avvio ---
 
-# IMPORTANTE: Inserisci qui l'URL iniziale
-BASE_URL = "https://it.wikipedia.org/wiki/Web_scraping" 
+# IMPORTANTE: L'URL iniziale viene caricato dall'ambiente
+BASE_URL = os.getenv("BASE_URL")
+
+# Controlla se la variabile BASE_URL è stata caricata correttamente
+if not BASE_URL:
+    raise ValueError("La variabile d'ambiente BASE_URL non è stata impostata. Creare un file .env o esportarla.")
 
 # Avvia il crawling dalla pagina base
 if __name__ == "__main__":
